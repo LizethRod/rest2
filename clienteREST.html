@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Cliente REST</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+    <link href="https://unpkg.com/primevue/resources/themes/saga-blue/theme.css " rel="stylesheet">
+    <link href="https://unpkg.com/primevue/resources/primevue.min.css " rel="stylesheet">
+    <link href="https://unpkg.com/primeicons/primeicons.css " rel="stylesheet">
+    <script src="https://unpkg.com/primevue/components/calendar/calendar.umd.min.js"></script>
+    <script src="https://unpkg.com/primevue/components/inputtext/inputtext.umd.min.js"></script>
+    <script src="https://unpkg.com/primevue/components/button/button.umd.min.js"></script>
+    <script src="https://unpkg.com/primevue/components/datatable/datatable.umd.min.js"></script>
+    <script src="https://unpkg.com/primevue/components/column/column.umd.min.js"></script>
+    <script src="https://unpkg.com/primevue/components/listbox/listbox.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
+</head>
+<body>
+
+</body>
+    <div id="app">
+
+    </div>
+
+    <script>
+        const vTemplate = `
+        <form>
+            {{ msgTexto }}
+            <p v-if="spanActivo">oooooooooo</p>
+            <p_inputtext type="text" v-model="txtNombre" placeholder="Escribe tu nombre" />
+            <p_inputtext type="text" v-model="txtEmail" placeholder="Escribe el email" />
+            <p_inputtext type="text" v-model="txtMensaje" placeholder="Escribe un mensaje" />
+            <h5>Selecciona estado</h5>
+
+            <p_inputtext type="text" v-model="idEstado" placeholder="id" />
+            <p_inputtext type="text" v-model="estadoSeleccionado" placeholder="estado" />
+            
+            <br><p-button label="Enviar" v-on:click="EnviarDatos($event)" />
+            <p-datatable :value="contactos">
+                <p_column field="id" header="Code" />
+                <p_column field="nombre" header="Nombre" />
+                <p_column field="Email" header="Email" />
+                <p_column field="Mensaje" header="Mensaje" />
+                <p_column field="Estado" header="Estado" />
+            </p-datatable>
+        </form>
+        `;
+        var vn = new Vue({
+        template :vTemplate,
+            components: {
+            'p-calendar': calendar,
+            'p_inputtext' : inputtext,
+            'p-button' : button,
+            'p-datatable': datatable,
+            'p_column': column,
+            'p-Listbox': listbox
+            },
+        data: {
+            msgTexto: "HolaaV",
+            spanActivo: true,
+            txtNombre :"",
+            txtEmail :"",
+            txtMensaje:"",
+            contactos:null,   
+            
+            idEstado: "",
+            estadoSeleccionado: ""
+            },
+            methods: {
+            EnviarDatos(){
+                //window.alert( "Hola " + this.txtNombre );
+                axios.post('http://localhost:3030/contacto', {
+                id: 3,
+                nombre: this.txtNombre,
+                Email : this.txtEmail,
+                Mensaje : this.txtMensaje,
+                Estado : {ID_Estado: this.idEstado, Nombre: this.estadoSeleccionado}
+                        
+
+            })
+            .then( (resp) => {
+                this.contactos = resp.data;
+                console.log(resp.data);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+            }
+        }
+        }).$mount('#app');
+    </script>
+    
+</html>
